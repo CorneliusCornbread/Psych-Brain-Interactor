@@ -30,6 +30,8 @@ public class BrainDescUI : MonoBehaviour
 
     public void HideDescription()
     {
+        SelectHighlight.DeselectCurrenSelections();
+
         description.SetActive(false);
     }
 }

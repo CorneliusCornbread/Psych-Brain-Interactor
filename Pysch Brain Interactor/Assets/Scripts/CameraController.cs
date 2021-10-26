@@ -18,24 +18,21 @@ public class CameraController : MonoBehaviour
     
     private float _rotationY;
     private float _rotationX;
-    
+
+    private void Start()
+    {
+        Vector3 rot = transform.eulerAngles;
+        _rotationX = rot.x;
+        _rotationY = rot.y;
+        
+        UpdateRotation();
+    }
+
     private void Update()
     {
         if (Input.GetMouseButton(1))
         {
-            float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-            float mouseY = Input.GetAxis("Mouse Y") * -mouseSensitivity;
-
-            _rotationY += mouseX;
-            _rotationX += mouseY;
-
-            // Apply clamping for x rotation 
-            _rotationX = Mathf.Clamp(_rotationX, rotationXMinMax.x, rotationXMinMax.y);
-
-            transform.localEulerAngles = new Vector3(_rotationX, _rotationY);
-
-            // Subtract forward vector of the GameObject to point its forward vector to the target
-            transform.position = target.position - transform.forward * Vector3.Distance(transform.position, target.position);
+            UpdateRotation();
         }
 
         float scrollDelta = Input.mouseScrollDelta.y;
@@ -43,6 +40,23 @@ public class CameraController : MonoBehaviour
         transform.position += transform.forward * scrollDelta * scrollSensitivity;
         
         transform.LookAt(target.position);
+    }
+
+    private void UpdateRotation()
+    {
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * -mouseSensitivity;
+
+        _rotationY += mouseX;
+        _rotationX += mouseY;
+
+        // Apply clamping for x rotation 
+        _rotationX = Mathf.Clamp(_rotationX, rotationXMinMax.x, rotationXMinMax.y);
+
+        transform.localEulerAngles = new Vector3(_rotationX, _rotationY);
+
+        // Subtract forward vector of the GameObject to point its forward vector to the target
+        transform.position = target.position - transform.forward * Vector3.Distance(transform.position, target.position);
     }
     
 }
