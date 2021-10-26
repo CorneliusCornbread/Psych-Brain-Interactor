@@ -15,9 +15,6 @@ public class SelectHighlight : MonoBehaviour
     private Material selectedMaterial;
     
     [SerializeField] 
-    private Material highlightMaterial;
-    
-    [SerializeField] 
     private bool dontDisableLastSelection = false;
     
     [SerializeField] 
