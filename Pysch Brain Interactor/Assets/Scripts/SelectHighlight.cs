@@ -6,11 +6,16 @@ public class SelectHighlight : MonoBehaviour
 {
     public static List<SelectHighlight> CurrentSelections { get; private set; } = new List<SelectHighlight>();
 
+    public static List<SelectHighlight> CurrentMouseOver { get; private set; } = new List<SelectHighlight>();
+    
     [SerializeField]
     private MeshRenderer mesh;
 
     [SerializeField] 
     private Material selectedMaterial;
+    
+    [SerializeField] 
+    private Material highlightMaterial;
     
     [SerializeField] 
     private bool dontDisableLastSelection = false;

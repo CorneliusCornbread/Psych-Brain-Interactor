@@ -20,6 +20,8 @@ public class BrainLayerController : MonoBehaviour
     private const int InnerBrainLayerId = 1;
     private const int BrainRegionsLayerId = 2;
     
+    private const string ChildTag = "Brain Child";
+    
     private int _activeLayerId = -1;
     private Collider[] _activeLayerColliders;
 
@@ -70,7 +72,7 @@ public class BrainLayerController : MonoBehaviour
 
         foreach (Collider col in _activeLayerColliders)
         {
-            if (_activeLayerId == InnerBrainLayerId)
+            if (_activeLayerId == InnerBrainLayerId && !col.CompareTag(ChildTag))
             {
                 Vector3 newPos = col.transform.position;
                 newPos.x -= 20;
@@ -106,9 +108,13 @@ public class BrainLayerController : MonoBehaviour
         
         foreach (Collider col in _activeLayerColliders)
         {
-            Vector3 newPos = col.transform.position;
-            newPos.x += 20;
-            col.transform.position = newPos;
+            if (!col.CompareTag(ChildTag))
+            {
+                Vector3 newPos = col.transform.position;
+                newPos.x += 20;
+                col.transform.position = newPos;
+            }
+            
             col.enabled = true;
         }
     }
