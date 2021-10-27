@@ -14,11 +14,15 @@ public class BrainLayerController : MonoBehaviour
     private Collider[] brainReigions;
 
     [SerializeField]
+    private Collider[] cerebralCortex;
+    
+    [SerializeField]
     private Transform innerCamPos;
 
     private const int OuterBrainLayerId = 0;
     private const int InnerBrainLayerId = 1;
     private const int BrainRegionsLayerId = 2;
+    private const int CerebralCortexLayerId = 3;
     
     private const string ChildTag = "Brain Child";
     
@@ -55,6 +59,11 @@ public class BrainLayerController : MonoBehaviour
             //Brain regions
             case BrainRegionsLayerId:
                 EnableBrainRegions();
+                break;
+            
+            //Cerebral cortex
+            case CerebralCortexLayerId:
+                EnableCerebralCortex();
                 break;
         }
     }
@@ -126,6 +135,20 @@ public class BrainLayerController : MonoBehaviour
         DisableActiveLayer();
         _activeLayerId = BrainRegionsLayerId;
         _activeLayerColliders = brainReigions;
+        
+        foreach (Collider col in _activeLayerColliders)
+        {
+            col.enabled = true;
+        }
+    }
+
+    private void EnableCerebralCortex()
+    {
+        if (_activeLayerId == CerebralCortexLayerId) return;
+        
+        DisableActiveLayer();
+        _activeLayerId = BrainRegionsLayerId;
+        _activeLayerColliders = cerebralCortex;
         
         foreach (Collider col in _activeLayerColliders)
         {

@@ -6,6 +6,8 @@ public class Selector : MonoBehaviour
     [SerializeField]
     private Camera cam;
 
+    private const string ChildCollider = "Child Collider";
+    
     private void Update()
     {
         if (!Input.GetMouseButtonDown(0)) return;
@@ -14,7 +16,7 @@ public class Selector : MonoBehaviour
             
         if (Physics.Raycast(ray, out RaycastHit hitInfo))
         {
-            hitInfo.collider.GetComponent<Selectable>()?.onSelect.Invoke();
+            hitInfo.collider.GetComponentInParent<Selectable>()?.onSelect.Invoke();
         }
     }
 }
