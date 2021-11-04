@@ -15,14 +15,29 @@ public class BrainLayerController : MonoBehaviour
 
     [SerializeField]
     private Collider[] cerebralCortex;
+
+    [SerializeField]
+    private GameObject otherRegions;
+    
+    [SerializeField]
+    private GameObject associationAreas;
     
     [SerializeField]
     private Transform innerCamPos;
+    
+    [SerializeField]
+    private GameObject spinalCord;
+    
+    [SerializeField]
+    private Transform spinalCordCamPos;
 
     private const int OuterBrainLayerId = 0;
     private const int InnerBrainLayerId = 1;
     private const int BrainRegionsLayerId = 2;
     private const int CerebralCortexLayerId = 3;
+    private const int OtherRegionsLayerId = 4;
+    private const int AssociationAreasLayerId = 5;
+    private const int SpinalCordLayerId = 6;
     
     private const string ChildTag = "Brain Child";
     
@@ -33,6 +48,8 @@ public class BrainLayerController : MonoBehaviour
 
     private Vector3 _oldCameraPos;
     private Quaternion _oldCameraRot;
+    private bool _isGO;
+    private GameObject _activeGOLayer;
     
     private void Start()
     {
@@ -65,20 +82,45 @@ public class BrainLayerController : MonoBehaviour
             case CerebralCortexLayerId:
                 EnableCerebralCortex();
                 break;
+            
+            //Other brain regions
+            case OtherRegionsLayerId:
+                EnableOtherBrainRegions();
+                break;
+            
+            //Association areas
+            case AssociationAreasLayerId:
+                EnableAssociationAreas();
+                break;
+            
+            //Spinal cord
+            case SpinalCordLayerId:
+                EnableSpinalMode();
+                break;
         }
     }
 
     private void DisableActiveLayer()
     {
-        if (_activeLayerColliders == null) { return; }
-
         if (_activeLayerId == InnerBrainLayerId)
         {
             DisableCameraInnerMode();
         }
+        else if (_activeLayerId == SpinalCordLayerId)
+        {
+            DisableCameraSpinalMode();
+        }
         
         BrainDescUI.Instance.HideDescription(); //Automatically hides the description and everything
 
+        if (_isGO)
+        {
+            _activeGOLayer.SetActive(false);
+            _activeGOLayer = null;
+            _isGO = false;
+            return;
+        }
+        
         foreach (Collider col in _activeLayerColliders)
         {
             if (_activeLayerId == InnerBrainLayerId && !col.CompareTag(ChildTag))
@@ -156,6 +198,46 @@ public class BrainLayerController : MonoBehaviour
         }
     }
 
+    private void EnableOtherBrainRegions()
+    {
+        if (_activeLayerId == BrainRegionsLayerId) return;
+        
+        DisableActiveLayer();
+        _activeLayerId = BrainRegionsLayerId;
+        _activeLayerColliders = null;
+        _isGO = true;
+        _activeGOLayer = otherRegions;
+        
+        otherRegions.SetActive(true);
+    }
+    
+    private void EnableAssociationAreas()
+    {
+        if (_activeLayerId == AssociationAreasLayerId) return;
+        
+        DisableActiveLayer();
+        _activeLayerId = AssociationAreasLayerId;
+        _activeLayerColliders = null;
+        _isGO = true;
+        _activeGOLayer = associationAreas;
+        
+        associationAreas.SetActive(true);
+    }
+
+    private void EnableSpinalMode()
+    {
+        if (_activeLayerId == SpinalCordLayerId) { return; }
+        
+        DisableActiveLayer();
+        EnableCameraSpinalMode();
+        _activeLayerId = SpinalCordLayerId;
+        _activeLayerColliders = null;
+        _isGO = true;
+        _activeGOLayer = spinalCord;
+        
+        spinalCord.SetActive(true);
+    }
+    
     private void EnableCameraInnerMode()
     {
         _camControl.enabled = false;
@@ -168,6 +250,25 @@ public class BrainLayerController : MonoBehaviour
     }
 
     private void DisableCameraInnerMode()
+    {
+        _camControl.enabled = true;
+
+        _camControl.transform.position = _oldCameraPos;
+        _camControl.transform.rotation = _oldCameraRot;
+    }
+
+    private void EnableCameraSpinalMode()
+    {
+        _camControl.enabled = false;
+
+        _oldCameraPos = _camControl.transform.position;
+        _oldCameraRot = _camControl.transform.rotation;
+
+        _camControl.transform.position = spinalCordCamPos.position;
+        _camControl.transform.rotation = spinalCordCamPos.rotation;
+    }
+    
+    private void DisableCameraSpinalMode()
     {
         _camControl.enabled = true;
 
